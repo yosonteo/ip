@@ -7,8 +7,8 @@ public class Jone {
         Scanner sc = new Scanner(System.in);
 
         String indent = "      ";
-        String greet = "Hello! I'm Jone! \n"
-                + "What can I do for you?";
+        String greet = "Hello! I'm Jone!\n"
+                     + "What can I do for you?";
         String exit = "Bye. Hope to see you again soon!";
 
         System.out.println(greet);
