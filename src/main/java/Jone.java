@@ -1,9 +1,9 @@
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class Jone {
     public static void main(String[] args) {
-        int taskCount = 0;
-        Task[] tasks = new Task[100];
+        ArrayList<Task> tasks = new ArrayList<>();
         Scanner sc = new Scanner(System.in);
 
         String indent = "      ";
@@ -22,27 +22,27 @@ public class Jone {
                     break;
 
                 } else if (input.equals("list")) {
-                    for (int i = 0; i < taskCount; i++) {
-                        System.out.println(indent + (i + 1) + ". " + tasks[i]);
+                    for (int i = 0; i < tasks.size(); i++) {
+                        System.out.println(indent + (i + 1) + ". " + tasks.get(i));
                     }
 
                 } else if (input.startsWith("mark ")) {     //need add spacing after to distinguish "mark" and "marking"
                     int idx = Integer.parseInt(input.substring(5).trim()) - 1;
-                    if (idx < 0 || idx >= taskCount) {
+                    if (idx < 0 || idx >= tasks.size()) {
                         throw new JoneException("Invalid task number.");
                     }
-                    tasks[idx].mark();
+                    tasks.get(idx).mark();
                     System.out.println(indent + "I've marked this task as done:");
-                    System.out.println(indent + "   " + tasks[idx]);
+                    System.out.println(indent + "   " + tasks.get(idx));
 
                 } else if (input.startsWith("unmark ")) {
                     int idx = Integer.parseInt(input.substring(7).trim()) - 1;
-                    if (idx < 0 || idx >= taskCount) {
+                    if (idx < 0 || idx >= tasks.size()) {
                         throw new JoneException("Invalid task number.");
                     }
-                    tasks[idx].unmark();
+                    tasks.get(idx).unmark();
                     System.out.println(indent + "I've marked this task as not done yet:");
-                    System.out.println(indent + "   " + tasks[idx]);
+                    System.out.println(indent + "   " + tasks.get(idx));
 
                 } else if (input.equals("todo") || input.startsWith("todo ")) {
                     if (input.trim().equals("todo")) {
@@ -50,30 +50,38 @@ public class Jone {
                     }
                     String desc = input.substring(5).trim();
                     Task t = new Todo(desc);
-                    tasks[taskCount] = t;
-                    taskCount++;
+                    tasks.add(t);
                     System.out.println(indent + "I've added this task:");
                     System.out.println(indent + "   " + t);
-                    System.out.println(indent + "Now you have " + taskCount + " tasks in the list.");
+                    System.out.println(indent + "Now you have " + tasks.size() + " tasks in the list.");
 
                 } else if (input.equals("deadline") || input.startsWith("deadline ")) {
                     Task t = getDeadline(input);
-                    tasks[taskCount] = t;
-                    taskCount++;
+                    tasks.add(t);
                     System.out.println(indent + "I've added this task:");
                     System.out.println(indent + "   " + t);
-                    System.out.println(indent + "Now you have " + taskCount + " tasks in the list.");
+                    System.out.println(indent + "Now you have " + tasks.size() + " tasks in the list.");
 
                 } else if (input.equals("event") || input.startsWith("event ")) {
                     Task t = getEvent(input);
-                    tasks[taskCount] = t;
-                    taskCount++;
+                    tasks.add(t);
                     System.out.println(indent + "I've added this task:");
                     System.out.println(indent + "   " + t);
-                    System.out.println(indent + "Now you have " + taskCount + " tasks in the list.");
+                    System.out.println(indent + "Now you have " + tasks.size() + " tasks in the list.");
+
+                } else if (input.startsWith("delete ")) {
+                    int idx = Integer.parseInt(input.substring(7).trim()) - 1;
+                    if (idx < 0 || idx >= tasks.size()) {
+                        throw new JoneException("Invalid task number.");
+                    }
+                    Task removed = tasks.remove(idx);  //ArrayList auto-shifts elements
+                    System.out.println(indent + "I've removed this task:");
+                    System.out.println(indent + "   " + removed);
+                    System.out.println(indent + "Now you have " + tasks.size() + " tasks in the list.");
 
                 } else {
                     throw new JoneException("Sorry, I don't know what that means.");
+
                 }
             } catch (JoneException e) {
                 System.out.println(indent + e.getMessage());
