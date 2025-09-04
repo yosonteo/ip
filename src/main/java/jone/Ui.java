@@ -6,7 +6,7 @@ package jone;
  * task updates, errors, and greetings to the user.
  */
 public class Ui {
-    private final String indent = "      ";
+    private static final String INDENT = "      ";
 
     /**
      * Prints the welcome message when the chatbot starts.
@@ -19,7 +19,7 @@ public class Ui {
      * Prints the exit message when the chatbot is terminated.
      */
     public void showExit() {
-        System.out.println(indent + "Bye. Hope to see you again soon!");
+        System.out.println(INDENT + "Bye. Hope to see you again soon!");
     }
 
     /**
@@ -28,7 +28,7 @@ public class Ui {
      * @param msg The message to be displayed.
      */
     public void showMessage(String msg) {
-        System.out.println(indent + msg);
+        System.out.println(INDENT + msg);
     }
 
     /**
@@ -77,6 +77,6 @@ public class Ui {
      * @param msg The error message to be displayed.
      */
     public void showError(String msg) {
-        System.out.println(indent + msg);
+        System.out.println(INDENT + msg);
     }
 }

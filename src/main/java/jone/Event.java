@@ -2,14 +2,19 @@ package jone;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 /**
  * Represents a scheduled event with a start and end time.
  * An {@code Event} has a description, time range, and completion status.
  */
 public class Event extends Task {
-    protected LocalDateTime start;
-    protected LocalDateTime end;
+    private static final String DATETIME_FORMAT = "yyyy-MM-dd HHmm";
+    private static final String DATETIME_FORMAT_ERROR =
+            "Invalid datetime format. Please use yyyy-MM-dd HHmm.";
+
+    private final LocalDateTime start;
+    private final LocalDateTime end;
 
     /**
      * Constructs a new {@code Event} with description, start, and end time.
@@ -22,10 +27,12 @@ public class Event extends Task {
     public Event(String description, String start, String end) throws JoneException {
         super(description);
         try {
-            this.start = LocalDateTime.parse(start, DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm"));
-            this.end = LocalDateTime.parse(end, DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm"));
-        } catch (Exception e) {
-            throw new JoneException("Invalid datetime format. Please use yyyy-MM-dd HHmm.");
+            this.start = LocalDateTime.parse(start,
+                    DateTimeFormatter.ofPattern(DATETIME_FORMAT));
+            this.end = LocalDateTime.parse(end,
+                    DateTimeFormatter.ofPattern(DATETIME_FORMAT));
+        } catch (DateTimeParseException e) {
+            throw new JoneException(DATETIME_FORMAT_ERROR);
         }
     }
 
@@ -41,10 +48,12 @@ public class Event extends Task {
     public Event(String description, String start, String end, boolean done) throws JoneException {
         super(description, done);
         try {
-            this.start = LocalDateTime.parse(start, DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm"));
-            this.end = LocalDateTime.parse(end, DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm"));
-        } catch (Exception e) {
-            throw new JoneException("Invalid datetime format. Please use yyyy-MM-dd HHmm.");
+            this.start = LocalDateTime.parse(start,
+                    DateTimeFormatter.ofPattern(DATETIME_FORMAT));
+            this.end = LocalDateTime.parse(end,
+                    DateTimeFormatter.ofPattern(DATETIME_FORMAT));
+        } catch (DateTimeParseException e) {
+            throw new JoneException(DATETIME_FORMAT_ERROR);
         }
     }
 
@@ -68,8 +77,8 @@ public class Event extends Task {
      */
     @Override
     public String toSaveFormat() {
-        return "E | " + (done ? 1 : 0) + " | " + description
-                + " | " + start.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm"))
-                + " | " + end.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm"));
+        return "E | " + (isDone() ? 1 : 0) + " | " + getDescription()
+                + " | " + start.format(DateTimeFormatter.ofPattern(DATETIME_FORMAT))
+                + " | " + end.format(DateTimeFormatter.ofPattern(DATETIME_FORMAT));
     }
 }

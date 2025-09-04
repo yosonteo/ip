@@ -6,8 +6,10 @@ package jone;
  * {@code Todo}, {@code Deadline}, and {@code Event}.
  */
 public abstract class Task {
-    protected final String description;
-    protected boolean done;
+    private static final String SEPARATOR = " \\| ";
+
+    private final String description;
+    private boolean done;
 
     /**
      * Constructs a new Task with the given description.
@@ -15,7 +17,7 @@ public abstract class Task {
      *
      * @param description The description of the task.
      */
-    public Task(String description) { //for new tasks
+    public Task(String description) {
         this.description = description;
         this.done = false;
     }
@@ -27,7 +29,7 @@ public abstract class Task {
      * @param description The description of the task.
      * @param done Whether the task has been completed.
      */
-    public Task(String description, boolean done) { //for previous stored tasks
+    public Task(String description, boolean done) {
         this.description = description;
         this.done = done;
     }
@@ -98,7 +100,7 @@ public abstract class Task {
      * @throws JoneException If the line cannot be parsed properly.
      */
     public static Task fromSaveFormat(String line) throws JoneException {
-        String[] parts = line.split(" \\| ");
+        String[] parts = line.split(SEPARATOR);
         String type = parts[0];
         boolean done = parts[1].equals("1");
         String desc = parts[2];
@@ -111,7 +113,7 @@ public abstract class Task {
             case "E":
                 return new Event(desc, parts[3], parts[4], done);
             default:
-                return new Todo(desc, done); // fallback
+                throw new JoneException("Invalid task type in save file.");
         }
     }
 }

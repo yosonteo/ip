@@ -2,13 +2,16 @@ package jone;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 /**
  * Represents a task with a deadline.
  * A {@code Deadline} has a description, due date, and completion status.
  */
 public class Deadline extends Task {
-    protected LocalDate by;
+    private static final String DATE_FORMAT_ERROR = "Invalid date format. Please use yyyy-MM-dd.";
+
+    private final LocalDate by;
 
     /**
      * Constructs a new {@code Deadline} with the given description and due date.
@@ -21,8 +24,8 @@ public class Deadline extends Task {
         super(description);
         try {
             this.by = LocalDate.parse(by);
-        } catch (Exception e) {
-            throw new JoneException("Invalid date format. Please use yyyy-MM-dd.");
+        } catch (DateTimeParseException e) {
+            throw new JoneException(DATE_FORMAT_ERROR);
         }
     }
 
@@ -38,8 +41,8 @@ public class Deadline extends Task {
         super(description, done);
         try {
             this.by = LocalDate.parse(by);
-        } catch (Exception e) {
-            throw new JoneException("Invalid date format. Please use yyyy-MM-dd.");
+        } catch (DateTimeParseException e) {
+            throw new JoneException(DATE_FORMAT_ERROR);
         }
     }
 
@@ -50,7 +53,8 @@ public class Deadline extends Task {
      */
     @Override
     public String toString() {
-        return "[D]" + super.toString() + " (by: " + by.format(DateTimeFormatter.ofPattern("MMM dd yyyy")) + ")";
+        return "[D]" + super.toString()
+                + " (by: " + by.format(DateTimeFormatter.ofPattern("MMM dd yyyy")) + ")";
     }
 
     /**
@@ -60,6 +64,6 @@ public class Deadline extends Task {
      */
     @Override
     public String toSaveFormat() {
-        return "D | " + (done ? 1 : 0) + " | " + description + " | " + by;
+        return "D | " + (isDone() ? 1 : 0) + " | " + getDescription() + " | " + by;
     }
 }

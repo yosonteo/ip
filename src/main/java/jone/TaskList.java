@@ -17,7 +17,7 @@ public class TaskList {
         tasks.add(t);
     }
 
-    public Task delete(int index) {
+    public Task remove(int index) {
         return tasks.remove(index);
     }
 
@@ -29,13 +29,13 @@ public class TaskList {
         return tasks.size();
     }
 
-    public ArrayList<Task> getAll() {
+    public ArrayList<Task> getAllTasks() {
         return tasks;
     }
 
-    public void listTasks(Ui ui) {
+    public void printTasks() {
         for (int i = 0; i < tasks.size(); i++) {
-            ui.showMessage((i + 1) + ". " + tasks.get(i));
+            System.out.println((i + 1) + ". " + tasks.get(i));
         }
     }
 }
