@@ -1,15 +1,17 @@
 package jone;
 
 public abstract class Task {
-    protected final String description;
-    protected boolean done;
+    private static final String SEPARATOR = " \\| ";
 
-    public Task(String description) { //for new tasks
+    private final String description;
+    private boolean done;
+
+    public Task(String description) {
         this.description = description;
         this.done = false;
     }
 
-    public Task(String description, boolean done) { //for previous stored tasks
+    public Task(String description, boolean done) {
         this.description = description;
         this.done = done;
     }
@@ -39,11 +41,10 @@ public abstract class Task {
         return String.format("[%s] %s", status(), description);
     }
 
-    // Must be implemented by subclasses
     public abstract String toSaveFormat();
 
     public static Task fromSaveFormat(String line) throws JoneException {
-        String[] parts = line.split(" \\| ");
+        String[] parts = line.split(SEPARATOR);
         String type = parts[0];
         boolean done = parts[1].equals("1");
         String desc = parts[2];
@@ -56,7 +57,7 @@ public abstract class Task {
             case "E":
                 return new Event(desc, parts[3], parts[4], done);
             default:
-                return new Todo(desc, done); // fallback
+                throw new JoneException("Invalid task type in save file.");
         }
     }
 }

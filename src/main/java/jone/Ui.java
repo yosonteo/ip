@@ -1,18 +1,18 @@
 package jone;
 
 public class Ui {
-    private final String indent = "      ";
+    private static final String INDENT = "      ";
 
     public void showWelcome() {
         System.out.println("Hello! I'm Jone!\nWhat can I do for you?");
     }
 
     public void showExit() {
-        System.out.println(indent + "Bye. Hope to see you again soon!");
+        System.out.println(INDENT + "Bye. Hope to see you again soon!");
     }
 
     public void showMessage(String msg) {
-        System.out.println(indent + msg);
+        System.out.println(INDENT + msg);
     }
 
     public void showTaskAdded(Task t, int size) {
@@ -37,6 +37,6 @@ public class Ui {
     }
 
     public void showError(String msg) {
-        System.out.println(indent + msg);
+        System.out.println(INDENT + msg);
     }
 }

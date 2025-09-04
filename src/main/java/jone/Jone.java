@@ -1,138 +1,93 @@
 package jone;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class Jone {
+    private static final String COMMAND_TODO = "todo";
+    private static final String COMMAND_DEADLINE = "deadline";
+    private static final String COMMAND_EVENT = "event";
+    private static final String COMMAND_LIST = "list";
+    private static final String COMMAND_MARK = "mark";
+    private static final String COMMAND_UNMARK = "unmark";
+    private static final String COMMAND_DELETE = "delete";
+    private static final String COMMAND_BYE = "bye";
+
     private final Storage storage;
-    private TaskList tasks;
+    private final TaskList tasks;
     private final Ui ui;
 
     public Jone(String filePath) {
         ui = new Ui();
         storage = new Storage(filePath);
+        TaskList loaded;
         try {
-            List<String> saved = storage.load();
-            ArrayList<Task> taskObjects = new ArrayList<>();
-            for (String line : saved) {
-                taskObjects.add(Task.fromSaveFormat(line));
-            }
-            tasks = new TaskList(taskObjects);
-        } catch (Exception e) {
-            ui.showError("Error loading tasks. Starting with empty list.");
-            tasks = new TaskList();
+            loaded = new TaskList(storage.load());
+        } catch (JoneException e) {
+            ui.showError("Failed to load tasks: " + e.getMessage());
+            loaded = new TaskList();
         }
+        tasks = loaded;
     }
 
     public void run() {
         ui.showWelcome();
         Scanner sc = new Scanner(System.in);
+        boolean isExit = false;
 
-        while (true) {
-            String input = sc.nextLine();
-            String command = Parser.getCommandWord(input);
-            String args = Parser.getArgs(input);
+        while (!isExit && sc.hasNextLine()) {
+            String line = sc.nextLine().trim();
+            String[] parts = line.split(" ", 2);
+            String command = parts[0];
 
             try {
                 switch (command) {
-                    case "bye":
-                        ui.showExit();
-                        return;
-
-                    case "list":
-                        tasks.listTasks(ui);
+                    case COMMAND_TODO:
+                        tasks.add(new Todo(parts[1]));
+                        ui.showTaskAdded(tasks.get(tasks.size() - 1), tasks.size());
                         break;
-
-                    case "mark":
-                        int markIdx = Integer.parseInt(args) - 1;
-                        Task marked = tasks.get(markIdx);
-                        marked.mark();
-                        ui.showTaskMarked(marked, true);
+                    case COMMAND_DEADLINE:
+                        String[] deadlineParts = parts[1].split(" /by ");
+                        tasks.add(new Deadline(deadlineParts[0], deadlineParts[1]));
+                        ui.showTaskAdded(tasks.get(tasks.size() - 1), tasks.size());
                         break;
-
-                    case "unmark":
-                        int unmarkIdx = Integer.parseInt(args) - 1;
-                        Task unmarked = tasks.get(unmarkIdx);
-                        unmarked.unmark();
-                        ui.showTaskMarked(unmarked, false);
+                    case COMMAND_EVENT:
+                        String[] eventParts = parts[1].split(" /from | /to ");
+                        tasks.add(new Event(eventParts[0], eventParts[1], eventParts[2]));
+                        ui.showTaskAdded(tasks.get(tasks.size() - 1), tasks.size());
                         break;
-
-                    case "todo":
-                        if (args.isEmpty()) throw new JoneException("Description of a todo cannot be empty.");
-                        Task t = new Todo(args);
-                        tasks.add(t);
-                        ui.showTaskAdded(t, tasks.size());
+                    case COMMAND_LIST:
+                        tasks.printTasks();
                         break;
-
-                    case "deadline":
-                        if (args.isEmpty()) throw new JoneException("Description of a deadline cannot be empty.");
-                        Task d = getDeadline(args);
-                        tasks.add(d);
-                        ui.showTaskAdded(d, tasks.size());
+                    case COMMAND_MARK:
+                        int markIndex = Integer.parseInt(parts[1]) - 1;
+                        tasks.get(markIndex).mark();
+                        ui.showTaskMarked(tasks.get(markIndex), true);
                         break;
-
-                    case "event":
-                        if (args.isEmpty()) throw new JoneException("Description of an event cannot be empty.");
-                        Task e = getEvent(args);
-                        tasks.add(e);
-                        ui.showTaskAdded(e, tasks.size());
+                    case COMMAND_UNMARK:
+                        int unmarkIndex = Integer.parseInt(parts[1]) - 1;
+                        tasks.get(unmarkIndex).unmark();
+                        ui.showTaskMarked(tasks.get(unmarkIndex), false);
                         break;
-
-                    case "delete":
-                        int delIdx = Integer.parseInt(args) - 1;
-                        Task removed = tasks.delete(delIdx);
+                    case COMMAND_DELETE:
+                        int deleteIndex = Integer.parseInt(parts[1]) - 1;
+                        Task removed = tasks.remove(deleteIndex);
                         ui.showTaskRemoved(removed, tasks.size());
                         break;
-
+                    case COMMAND_BYE:
+                        ui.showExit();
+                        isExit = true;
+                        break;
                     default:
-                        throw new JoneException("Sorry, I don't know what that means.");
+                        ui.showError("I'm sorry, but I don't know what that means.");
                 }
-
-                // Save after every command
-                storage.save(toStringList(tasks.getAll()));
-
-            } catch (JoneException je) {
-                ui.showError(je.getMessage());
-            } catch (NumberFormatException nfe) {
-                ui.showError("Invalid task number.");
+                storage.save(tasks.getAllTasks());
             } catch (Exception e) {
-                ui.showError("Unexpected error: " + e.getMessage());
+                ui.showError(e.getMessage());
             }
         }
     }
 
-    private static Task getDeadline(String args) throws JoneException {
-        int pos = args.indexOf("/by");
-        if (pos == -1) {
-            throw new JoneException("Deadline must be in the format: deadline <desc> /by <yyyy-MM-dd>");
-        }
-        String desc = args.substring(0, pos).trim();
-        String by = args.substring(pos + 3).trim();
-        return new Deadline(desc, by);
-    }
-
-    private static Task getEvent(String args) throws JoneException {
-        int fromPos = args.indexOf("/from");
-        int toPos = args.indexOf("/to");
-        if (fromPos == -1 || toPos == -1) {
-            throw new JoneException("Event must be in the format: event <desc> /from <yyyy-MM-dd HHmm> /to <yyyy-MM-dd HHmm>");
-        }
-        String desc = args.substring(0, fromPos).trim();
-        String start = args.substring(fromPos + 5, toPos).trim();
-        String end = args.substring(toPos + 3).trim();
-        return new Event(desc, start, end);
-    }
-
-    private static ArrayList<String> toStringList(ArrayList<Task> tasks) {
-        ArrayList<String> lines = new ArrayList<>();
-        for (Task t : tasks) {
-            lines.add(t.toSaveFormat());
-        }
-        return lines;
-    }
-
     public static void main(String[] args) {
-        new Jone("./data/duke.txt").run();
+        new Jone("data/jone.txt").run();
     }
 }

@@ -5,28 +5,28 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 import java.util.List;
+import java.util.ArrayList;
 
 public class StorageTest {
 
     @Test
-    public void load_noFile_returnsEmptyList() {
+    public void load_noFile_returnsEmptyList() throws JoneException {
         Storage s = new Storage("nonexistent.txt");
-        List<String> tasks = s.load();
+        List<Task> tasks = s.load();
         assertTrue(tasks.isEmpty(), "Loading from nonexistent file should give an empty list");
     }
 
     @Test
-    public void save_thenLoad_returnsSameData() {
+    public void save_thenLoad_returnsSameTask() throws JoneException {
         String testFile = "testdata.txt";
         Storage s = new Storage(testFile);
 
-        List<String> original = List.of("todo read book", "deadline project /by 2025-09-06");
-        s.save(original);
+        Task t = new Todo("testing save");
+        s.save(new ArrayList<>(List.of(t)));
 
-        List<String> loaded = s.load();
-        assertEquals(original.size(), loaded.size(), "Should load the same number of lines");
-        assertEquals(original.get(0), loaded.get(0), "First line should match");
-        assertEquals(original.get(1), loaded.get(1), "Second line should match");
+        ArrayList<Task> loaded = s.load();
+        assertEquals(1, loaded.size(), "Should load exactly one task");
+        assertEquals("[T][ ] testing save", loaded.get(0).toString());
 
         // cleanup
         new File(testFile).delete();

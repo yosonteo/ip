@@ -2,16 +2,19 @@ package jone;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 public class Deadline extends Task {
-    protected LocalDate by;
+    private static final String DATE_FORMAT_ERROR = "Invalid date format. Please use yyyy-MM-dd.";
+
+    private final LocalDate by;
 
     public Deadline(String description, String by) throws JoneException {
         super(description);
         try {
             this.by = LocalDate.parse(by);
-        } catch (Exception e) {
-            throw new JoneException("Invalid date format. Please use yyyy-MM-dd.");
+        } catch (DateTimeParseException e) {
+            throw new JoneException(DATE_FORMAT_ERROR);
         }
     }
 
@@ -19,18 +22,19 @@ public class Deadline extends Task {
         super(description, done);
         try {
             this.by = LocalDate.parse(by);
-        } catch (Exception e) {
-            throw new JoneException("Invalid date format. Please use yyyy-MM-dd.");
+        } catch (DateTimeParseException e) {
+            throw new JoneException(DATE_FORMAT_ERROR);
         }
     }
 
     @Override
     public String toString() {
-        return "[D]" + super.toString() + " (by: " + by.format(DateTimeFormatter.ofPattern("MMM dd yyyy")) + ")";
+        return "[D]" + super.toString()
+                + " (by: " + by.format(DateTimeFormatter.ofPattern("MMM dd yyyy")) + ")";
     }
 
     @Override
     public String toSaveFormat() {
-        return "D | " + (done ? 1 : 0) + " | " + description + " | " + by;
+        return "D | " + (isDone() ? 1 : 0) + " | " + getDescription() + " | " + by;
     }
 }

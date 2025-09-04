@@ -1,6 +1,8 @@
 package jone;
 
 public class Todo extends Task {
+    private static final String TYPE = "T";
+
     public Todo(String description) {
         super(description);
     }
@@ -11,11 +13,11 @@ public class Todo extends Task {
 
     @Override
     public String toString() {
-        return String.format("[T][%s] %s", status(), description);
+        return String.format("[%s][%s] %s", TYPE, status(), getDescription());
     }
 
     @Override
     public String toSaveFormat() {
-        return "T | " + (done ? 1 : 0) + " | " + description;
+        return TYPE + " | " + (isDone() ? 1 : 0) + " | " + getDescription();
     }
 }
