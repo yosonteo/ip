@@ -85,6 +85,14 @@ public class Jone {
                         ui.showTaskRemoved(removed, tasks.size());
                         break;
 
+                    case "find":
+                        if (args.isEmpty()) {
+                            ui.showError("Please provide a keyword to search for.");
+                        } else {
+                            tasks.findTasks(args);
+                        }
+                        break;
+
                     default:
                         throw new JoneException("Sorry, I don't know what that means.");
                 }

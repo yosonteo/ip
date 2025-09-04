@@ -38,5 +38,15 @@ public class TaskList {
             ui.showMessage((i + 1) + ". " + tasks.get(i));
         }
     }
+
+    public void findTasks(String keyword) {
+        Ui ui = new Ui();
+        ui.showMessage("Here are the matching tasks in your list:");
+        for (int i = 0; i < tasks.size(); i++) {
+            if (tasks.get(i).getDescription().contains(keyword)) {
+                ui.showMessage((i + 1) + ". " + tasks.get(i));
+            }
+        }
+    }
 }
 
