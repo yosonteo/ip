@@ -20,7 +20,10 @@ public class Storage {
         try {
             File file = new File(filePath);
             if (!file.exists()) {
-                file.getParentFile().mkdirs();
+                File parent = file.getParentFile();
+                if (parent != null) {
+                    parent.mkdirs();
+                }
                 file.createNewFile();
             } else {
                 lines = Files.readAllLines(Paths.get(filePath));
