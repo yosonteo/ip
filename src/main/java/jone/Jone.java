@@ -73,10 +73,18 @@ public class Jone {
                         Task removed = tasks.remove(deleteIndex);
                         ui.showTaskRemoved(removed, tasks.size());
                         break;
+                    case "find":
+                        if (parts.length < 2) {
+                            ui.showError("Please provide a keyword to search for.");
+                        } else {
+                            tasks.findTasks(parts[1]);
+                        }
+                        break;
                     case COMMAND_BYE:
                         ui.showExit();
                         isExit = true;
                         break;
+
                     default:
                         ui.showError("I'm sorry, but I don't know what that means.");
                 }
