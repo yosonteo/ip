@@ -1,47 +1,102 @@
 package jone;
 
+/**
+ * Represents a generic task with a description and completion status.
+ * This is an abstract base class for specific task types such as
+ * {@code Todo}, {@code Deadline}, and {@code Event}.
+ */
 public abstract class Task {
     protected final String description;
     protected boolean done;
 
+    /**
+     * Constructs a new Task with the given description.
+     * Used when creating a brand-new task.
+     *
+     * @param description The description of the task.
+     */
     public Task(String description) { //for new tasks
         this.description = description;
         this.done = false;
     }
 
+    /**
+     * Constructs a Task with the given description and completion status.
+     * Used when loading tasks that were previously stored.
+     *
+     * @param description The description of the task.
+     * @param done Whether the task has been completed.
+     */
     public Task(String description, boolean done) { //for previous stored tasks
         this.description = description;
         this.done = done;
     }
 
+    /**
+     * Marks this task as done.
+     */
     public void mark() {
         this.done = true;
     }
 
+    /**
+     * Marks this task as not done.
+     */
     public void unmark() {
         this.done = false;
     }
 
+    /**
+     * Returns whether this task is completed.
+     *
+     * @return {@code true} if task is done, {@code false} otherwise.
+     */
     public boolean isDone() {
         return done;
     }
 
+    /**
+     * Returns the description of this task.
+     *
+     * @return Task description.
+     */
     public String getDescription() {
         return description;
     }
 
+    /**
+     * Returns the status symbol of this task.
+     *
+     * @return "X" if done, otherwise a blank space.
+     */
     protected String status() {
         return done ? "X" : " ";
     }
 
+    /**
+     * Returns the string representation of this task.
+     *
+     * @return A formatted string showing task status and description.
+     */
     @Override
     public String toString() {
         return String.format("[%s] %s", status(), description);
     }
 
-    // Must be implemented by subclasses
+    /**
+     * Converts this task into a string suitable for saving to file.
+     *
+     * @return Save format string.
+     */
     public abstract String toSaveFormat();
 
+    /**
+     * Creates a {@code Task} object from a saved line in storage format.
+     *
+     * @param line A line from the save file.
+     * @return A corresponding {@code Task} object.
+     * @throws JoneException If the line cannot be parsed properly.
+     */
     public static Task fromSaveFormat(String line) throws JoneException {
         String[] parts = line.split(" \\| ");
         String type = parts[0];
