@@ -2,12 +2,12 @@ public abstract class Task {
     protected final String description;
     protected boolean done;
 
-    public Task(String description) {
+    public Task(String description) { //for new tasks
         this.description = description;
         this.done = false;
     }
 
-    public Task(String description, boolean done) {
+    public Task(String description, boolean done) { //for previous stored tasks
         this.description = description;
         this.done = done;
     }
