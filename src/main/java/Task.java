@@ -40,7 +40,7 @@ public abstract class Task {
     // Must be implemented by subclasses
     public abstract String toSaveFormat();
 
-    public static Task fromSaveFormat(String line) {
+    public static Task fromSaveFormat(String line) throws JoneException {
         String[] parts = line.split(" \\| ");
         String type = parts[0];
         boolean done = parts[1].equals("1");

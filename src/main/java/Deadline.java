@@ -1,19 +1,30 @@
-public class Deadline extends Task {
-    private final String by;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
-    public Deadline(String description, String by) {
+public class Deadline extends Task {
+    protected LocalDate by;
+
+    public Deadline(String description, String by) throws JoneException {
         super(description);
-        this.by = by;
+        try {
+            this.by = LocalDate.parse(by);
+        } catch (Exception e) {
+            throw new JoneException("Invalid date format. Please use yyyy-MM-dd.");
+        }
     }
 
-    public Deadline(String description, String by, boolean done) {
+    public Deadline(String description, String by, boolean done) throws JoneException {
         super(description, done);
-        this.by = by;
+        try {
+            this.by = LocalDate.parse(by);
+        } catch (Exception e) {
+            throw new JoneException("Invalid date format. Please use yyyy-MM-dd.");
+        }
     }
 
     @Override
     public String toString() {
-        return String.format("[D][%s] %s (by: %s)", status(), description, by);
+        return "[D]" + super.toString() + " (by: " + by.format(DateTimeFormatter.ofPattern("MMM dd yyyy")) + ")";
     }
 
     @Override
