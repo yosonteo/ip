@@ -1,3 +1,5 @@
+package jone;
+
 public class Ui {
     private final String indent = "      ";
 
