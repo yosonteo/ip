@@ -6,7 +6,7 @@ public class Jone {
     private static final String FILE_PATH = "./data/duke.txt";
     private static Storage storage = new Storage(FILE_PATH);
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws JoneException {
         ArrayList<Task> tasks = new ArrayList<>();
         List<String> saved = storage.load();
         for (String line : saved) {
@@ -108,13 +108,13 @@ public class Jone {
 
     private static Task getEvent(String input) throws JoneException {
         if (input.trim().equals("event")) {
-            throw new JoneException("Event must be in the format: event <desc> /from <start> /to <end>");
+            throw new JoneException("Event must be in the format: event <desc> /from <yyyy-MM-dd HHmm> /to <yyyy-MM-dd HHmm>");
         }
         String body = input.substring(6).trim();
         int fromPos = body.indexOf("/from");
         int toPos = body.indexOf("/to");
         if (fromPos == -1 || toPos == -1) {
-            throw new JoneException("Event must be in the format: event <desc> /from <start> /to <end>");
+            throw new JoneException("Event must be in the format: event <desc> /from <yyyy-MM-dd HHmm> /to <yyyy-MM-dd HHmm>");
         }
         String desc = body.substring(0, fromPos).trim();
         String start = body.substring(fromPos + 5, toPos).trim();
@@ -124,12 +124,12 @@ public class Jone {
 
     private static Task getDeadline(String input) throws JoneException {
         if (input.trim().equals("deadline")) {
-            throw new JoneException("Deadline must be in the format: deadline <desc> /by <time>");
+            throw new JoneException("Deadline must be in the format: deadline <desc> /by <yyyy-MM-dd>");
         }
         String body = input.substring(9).trim();
         int pos = body.indexOf("/by");
         if (pos == -1) {
-            throw new JoneException("Deadline must be in the format: deadline <desc> /by <time>");
+            throw new JoneException("Deadline must be in the format: deadline <desc> /by <yyyy-MM-dd>");
         }
         String desc = body.substring(0, pos).trim();
         String by = body.substring(pos + 3).trim();
