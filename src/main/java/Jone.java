@@ -1,9 +1,18 @@
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Jone {
+    private static final String FILE_PATH = "./data/duke.txt";
+    private static Storage storage = new Storage(FILE_PATH);
+
     public static void main(String[] args) {
         ArrayList<Task> tasks = new ArrayList<>();
+        List<String> saved = storage.load();
+        for (String line : saved) {
+            tasks.add(Task.fromSaveFormat(line));
+        }
+
         Scanner sc = new Scanner(System.in);
 
         String indent = "      ";
@@ -34,6 +43,7 @@ public class Jone {
                     tasks.get(idx).mark();
                     System.out.println(indent + "I've marked this task as done:");
                     System.out.println(indent + "   " + tasks.get(idx));
+                    storage.save(toStringList(tasks));
 
                 } else if (input.startsWith("unmark ")) {
                     int idx = Integer.parseInt(input.substring(7).trim()) - 1;
@@ -43,6 +53,7 @@ public class Jone {
                     tasks.get(idx).unmark();
                     System.out.println(indent + "I've marked this task as not done yet:");
                     System.out.println(indent + "   " + tasks.get(idx));
+                    storage.save(toStringList(tasks));
 
                 } else if (input.equals("todo") || input.startsWith("todo ")) {
                     if (input.trim().equals("todo")) {
@@ -54,6 +65,7 @@ public class Jone {
                     System.out.println(indent + "I've added this task:");
                     System.out.println(indent + "   " + t);
                     System.out.println(indent + "Now you have " + tasks.size() + " tasks in the list.");
+                    storage.save(toStringList(tasks));
 
                 } else if (input.equals("deadline") || input.startsWith("deadline ")) {
                     Task t = getDeadline(input);
@@ -61,6 +73,7 @@ public class Jone {
                     System.out.println(indent + "I've added this task:");
                     System.out.println(indent + "   " + t);
                     System.out.println(indent + "Now you have " + tasks.size() + " tasks in the list.");
+                    storage.save(toStringList(tasks));
 
                 } else if (input.equals("event") || input.startsWith("event ")) {
                     Task t = getEvent(input);
@@ -68,6 +81,7 @@ public class Jone {
                     System.out.println(indent + "I've added this task:");
                     System.out.println(indent + "   " + t);
                     System.out.println(indent + "Now you have " + tasks.size() + " tasks in the list.");
+                    storage.save(toStringList(tasks));
 
                 } else if (input.startsWith("delete ")) {
                     int idx = Integer.parseInt(input.substring(7).trim()) - 1;
@@ -78,6 +92,7 @@ public class Jone {
                     System.out.println(indent + "I've removed this task:");
                     System.out.println(indent + "   " + removed);
                     System.out.println(indent + "Now you have " + tasks.size() + " tasks in the list.");
+                    storage.save(toStringList(tasks));
 
                 } else {
                     throw new JoneException("Sorry, I don't know what that means.");
@@ -119,5 +134,13 @@ public class Jone {
         String desc = body.substring(0, pos).trim();
         String by = body.substring(pos + 3).trim();
         return new Deadline(desc, by);
+    }
+
+    private static ArrayList<String> toStringList(ArrayList<Task> tasks) {
+        ArrayList<String> lines = new ArrayList<>();
+        for (Task t : tasks) {
+            lines.add(t.toSaveFormat());
+        }
+        return lines;
     }
 }
