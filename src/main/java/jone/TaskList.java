@@ -34,8 +34,10 @@ public class TaskList {
     }
 
     public void printTasks() {
+        Ui ui = new Ui();
+        ui.showMessage("Here are your tasks:");
         for (int i = 0; i < tasks.size(); i++) {
-            System.out.println((i + 1) + ". " + tasks.get(i));
+            ui.showMessage("  " + (i + 1) + ". " + tasks.get(i));
         }
     }
 
