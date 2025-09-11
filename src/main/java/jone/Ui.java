@@ -2,81 +2,79 @@ package jone;
 
 /**
  * Handles all user interface interactions for the chatbot.
- * The {@code Ui} class is responsible for displaying messages,
- * task updates, errors, and greetings to the user.
+ * The {@code Ui} class is responsible for generating messages,
+ * task updates, errors, and greetings for the user.
  */
 public class Ui {
     private static final String INDENT = "      ";
 
     /**
-     * Prints the welcome message when the chatbot starts.
+     * Returns the welcome message when the chatbot starts.
      */
-    public void showWelcome() {
-        System.out.println("Hello! I'm Jone!\nWhat can I do for you?");
+    public String showWelcome() {
+        return "Hello! I'm Jone!\nWhat can I do for you?";
     }
 
     /**
-     * Prints the exit message when the chatbot is terminated.
+     * Returns the exit message when the chatbot is terminated.
      */
-    public void showExit() {
-        System.out.println(INDENT + "Bye. Hope to see you again soon!");
+    public String showExit() {
+        return INDENT + "Bye. Hope to see you again soon!";
     }
 
     /**
-     * Prints a general message to the user with indentation.
+     * Returns a general message with indentation.
      *
      * @param msg The message to be displayed.
      */
-    public void showMessage(String msg) {
-        System.out.println(INDENT + msg);
+    public String showMessage(String msg) {
+        return INDENT + msg;
     }
 
     /**
-     * Prints a message when a task is added to the task list.
+     * Returns a message when a task is added to the task list.
      *
      * @param t The task that was added.
      * @param size The new number of tasks in the list.
      */
-    public void showTaskAdded(Task t, int size) {
-        showMessage("I've added this task:");
-        showMessage("   " + t);
-        showMessage("Now you have " + size + " tasks in the list.");
+    public String showTaskAdded(Task t, int size) {
+        return "I've added this task:\n   " + t
+                + "\nNow you have " + size + " tasks in the list.";
     }
 
     /**
-     * Prints a message when a task is removed from the task list.
+     * Returns a message when a task is removed from the task list.
      *
      * @param t The task that was removed.
      * @param size The new number of tasks remaining in the list.
      */
-    public void showTaskRemoved(Task t, int size) {
-        showMessage("I've removed this task:");
-        showMessage("   " + t);
-        showMessage("Now you have " + size + " tasks in the list.");
+    public String showTaskRemoved(Task t, int size) {
+        return "I've removed this task:\n   " + t
+                + "\nNow you have " + size + " tasks in the list.";
     }
 
     /**
-     * Prints a message when a task is marked as done or undone.
+     * Returns a message when a task is marked as done or undone.
      *
      * @param t The task that was updated.
      * @param done {@code true} if the task is now done,
      *             {@code false} if marked as not done.
      */
-    public void showTaskMarked(Task t, boolean done) {
+    public String showTaskMarked(Task t, boolean done) {
         if (done) {
-            showMessage("I've marked this task as done:");
+            return "I've marked this task as done:\n   " + t;
         } else {
-            showMessage("I've marked this task as not done yet:");
+            return "I've marked this task as not done yet:\n   " + t;
         }
-        showMessage("   " + t);
     }
 
     /**
-     * Prints an error message to the user.
+     * Returns an error message.
      *
      * @param msg The error message to be displayed.
      */
-    public void showError(String msg) {
-        System.out.println(INDENT + msg);
+    public String showError(String msg) {
+        return INDENT + msg;
     }
 }
+

@@ -1,7 +1,5 @@
 package jone;
 
-import java.util.Scanner;
-
 public class Jone {
 
     private static final String COMMAND_TODO = "todo";
@@ -30,91 +28,73 @@ public class Jone {
         tasks = loaded;
     }
 
-    public void run() {
-        ui.showWelcome();
-        Scanner sc = new Scanner(System.in);
-        boolean isExit = false;
+    public String getResponse(String line) {
+        try {
+            String[] parsed = Parser.parse(line);
+            String command = parsed[0];
+            String arguments = parsed[1];
 
-        while (!isExit && sc.hasNextLine()) {
-            String line = sc.nextLine().trim();
+            switch (command) {
+                case COMMAND_TODO:
+                    Task todo = new Todo(arguments);
+                    tasks.add(todo);
+                    storage.save(tasks.getAllTasks());
+                    return ui.showTaskAdded(todo, tasks.size());
 
-            try {
-                // Use Parser to parse and validate command and arguments
-                String[] parsed = Parser.parse(line);
-                String command = parsed[0];
-                String arguments = parsed[1];
+                case COMMAND_DEADLINE:
+                    String[] deadlineParts = arguments.split(" /by ", 2);
+                    if (deadlineParts.length < 2) {
+                        return ui.showError("Deadline must be in the format: deadline <desc> /by <yyyy-MM-dd>");
+                    }
+                    Task deadline = new Deadline(deadlineParts[0], deadlineParts[1]);
+                    tasks.add(deadline);
+                    storage.save(tasks.getAllTasks());
+                    return ui.showTaskAdded(deadline, tasks.size());
 
-                switch (command) {
-                    case COMMAND_TODO:
-                        tasks.add(new Todo(arguments));
-                        ui.showTaskAdded(tasks.get(tasks.size() - 1), tasks.size());
-                        break;
+                case COMMAND_EVENT:
+                    String[] eventParts = arguments.split(" /from | /to ");
+                    if (eventParts.length < 3) {
+                        return ui.showError("Event must be in the format: event <desc> /from <yyyy-MM-dd HHmm> /to <yyyy-MM-dd HHmm>");
+                    }
+                    Task event = new Event(eventParts[0], eventParts[1], eventParts[2]);
+                    tasks.add(event);
+                    storage.save(tasks.getAllTasks());
+                    return ui.showTaskAdded(event, tasks.size());
 
-                    case COMMAND_DEADLINE:
-                        String[] deadlineParts = arguments.split(" /by ", 2);
-                        if (deadlineParts.length < 2) {
-                            throw new JoneException("Deadline must be in the format: deadline <desc> /by <yyyy-MM-dd>");
-                        }
-                        tasks.add(new Deadline(deadlineParts[0], deadlineParts[1]));
-                        ui.showTaskAdded(tasks.get(tasks.size() - 1), tasks.size());
-                        break;
+                case COMMAND_LIST:
+                    return tasks.getTasksAsString();
 
-                    case COMMAND_EVENT:
-                        String[] eventParts = arguments.split(" /from | /to ");
-                        if (eventParts.length < 3) {
-                            throw new JoneException("Event must be in the format: event <desc> /from <yyyy-MM-dd HHmm> /to <yyyy-MM-dd HHmm>");
-                        }
-                        tasks.add(new Event(eventParts[0], eventParts[1], eventParts[2]));
-                        ui.showTaskAdded(tasks.get(tasks.size() - 1), tasks.size());
-                        break;
+                case COMMAND_MARK:
+                    int markIndex = Integer.parseInt(arguments) - 1;
+                    tasks.get(markIndex).mark();
+                    storage.save(tasks.getAllTasks());
+                    return ui.showTaskMarked(tasks.get(markIndex), true);
 
-                    case COMMAND_LIST:
-                        tasks.printTasks();
-                        break;
+                case COMMAND_UNMARK:
+                    int unmarkIndex = Integer.parseInt(arguments) - 1;
+                    tasks.get(unmarkIndex).unmark();
+                    storage.save(tasks.getAllTasks());
+                    return ui.showTaskMarked(tasks.get(unmarkIndex), false);
 
-                    case COMMAND_MARK:
-                        int markIndex = Integer.parseInt(arguments) - 1;
-                        tasks.get(markIndex).mark();
-                        ui.showTaskMarked(tasks.get(markIndex), true);
-                        break;
+                case COMMAND_DELETE:
+                    int deleteIndex = Integer.parseInt(arguments) - 1;
+                    Task removed = tasks.remove(deleteIndex);
+                    storage.save(tasks.getAllTasks());
+                    return ui.showTaskRemoved(removed, tasks.size());
 
-                    case COMMAND_UNMARK:
-                        int unmarkIndex = Integer.parseInt(arguments) - 1;
-                        tasks.get(unmarkIndex).unmark();
-                        ui.showTaskMarked(tasks.get(unmarkIndex), false);
-                        break;
+                case "find":
+                    return tasks.findTasks(arguments);
 
-                    case COMMAND_DELETE:
-                        int deleteIndex = Integer.parseInt(arguments) - 1;
-                        Task removed = tasks.remove(deleteIndex);
-                        ui.showTaskRemoved(removed, tasks.size());
-                        break;
+                case COMMAND_BYE:
+                    return ui.showExit();
 
-                    case "find":
-                        tasks.findTasks(arguments);
-                        break;
-
-                    case COMMAND_BYE:
-                        ui.showExit();
-                        isExit = true;
-                        break;
-
-                    default:
-                        ui.showError("I'm sorry, but I don't know what that means.");
-                        break;
-                }
-                storage.save(tasks.getAllTasks());
-
-            } catch (JoneException e) {
-                ui.showError(e.getMessage());
-            } catch (Exception e) {
-                ui.showError("An unexpected error occurred: " + e.getMessage());
+                default:
+                    return ui.showError("I'm sorry, but I don't know what that means.");
             }
+        } catch (JoneException e) {
+            return ui.showError(e.getMessage());
+        } catch (Exception e) {
+            return ui.showError("An unexpected error occurred: " + e.getMessage());
         }
-        sc.close();
-    }
-
-    public static void main(String[] args) {
-        new Jone("data/jone.txt").run();
     }
 }
