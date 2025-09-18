@@ -7,9 +7,11 @@ package jone;
  */
 public abstract class Task {
     private static final String SEPARATOR = " \\| ";
+    protected static final String STATUS_TICK = "X";
+    protected static final String STATUS_CROSS = " ";
 
     private final String description;
-    private boolean done;
+    private boolean isDone;
 
     /**
      * Constructs a new Task with the given description.
@@ -19,7 +21,7 @@ public abstract class Task {
      */
     public Task(String description) {
         this.description = description;
-        this.done = false;
+        this.isDone = false;
     }
 
     /**
@@ -31,21 +33,21 @@ public abstract class Task {
      */
     public Task(String description, boolean done) {
         this.description = description;
-        this.done = done;
+        this.isDone = done;
     }
 
     /**
      * Marks this task as done.
      */
     public void mark() {
-        this.done = true;
+        this.isDone = true;
     }
 
     /**
      * Marks this task as not done.
      */
     public void unmark() {
-        this.done = false;
+        this.isDone = false;
     }
 
     /**
@@ -54,7 +56,7 @@ public abstract class Task {
      * @return {@code true} if task is done, {@code false} otherwise.
      */
     public boolean isDone() {
-        return done;
+        return isDone;
     }
 
     /**
@@ -72,7 +74,7 @@ public abstract class Task {
      * @return "X" if done, otherwise a blank space.
      */
     protected String status() {
-        return done ? "X" : " ";
+        return isDone ? STATUS_TICK : STATUS_CROSS;
     }
 
     /**

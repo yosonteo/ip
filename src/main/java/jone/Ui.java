@@ -6,6 +6,9 @@ package jone;
  * task updates, errors, and greetings for the user.
  */
 public class Ui {
+    /**
+     * Number of spaces to indent messages for consistent formatting.
+     */
     private static final String INDENT = "      ";
 
     /**
