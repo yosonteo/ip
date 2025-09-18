@@ -18,10 +18,12 @@ public class TaskList {
     }
 
     public Task remove(int index) {
+        assert index >= 0 && index < tasks.size() : "Index out of bounds in remove()";
         return tasks.remove(index);
     }
 
     public Task get(int index) {
+        assert index >= 0 && index < tasks.size() : "Index out of bounds in get()";
         return tasks.get(index);
     }
 
@@ -42,6 +44,7 @@ public class TaskList {
     }
 
     public String findTasks(String keyword) {
+        assert keyword != null : "Keyword cannot be null";
         StringBuilder sb = new StringBuilder("Here are the matching tasks in your list:\n");
         for (int i = 0; i < tasks.size(); i++) {
             if (tasks.get(i).getDescription().contains(keyword)) {
