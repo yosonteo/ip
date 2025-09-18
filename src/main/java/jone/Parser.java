@@ -13,6 +13,7 @@ public class Parser {
      * @throws JoneException If the input is invalid for known commands.
      */
     public static String[] parse(String fullCommand) throws JoneException {
+        assert fullCommand != null : "Input cannot be null";
         String[] parts = fullCommand.trim().split(" ", 2);
         String commandWord = parts[0].toLowerCase();
         String arguments = (parts.length > 1) ? parts[1].trim() : "";
