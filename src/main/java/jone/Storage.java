@@ -40,6 +40,7 @@ public class Storage {
             Scanner sc = new Scanner(file);
             while (sc.hasNextLine()) {
                 String line = sc.nextLine();
+                assert line != null && !line.trim().isEmpty() : "Empty or null line in save file";
                 tasks.add(Task.fromSaveFormat(line));
             }
         } catch (IOException e) {
@@ -55,6 +56,7 @@ public class Storage {
      * @throws JoneException If there is an error accessing the file.
      */
     public void save(ArrayList<Task> tasks) throws JoneException {
+        assert tasks != null : "Task list cannot be null when saving";
         try {
             FileWriter writer = new FileWriter(filePath);
             for (Task task : tasks) {

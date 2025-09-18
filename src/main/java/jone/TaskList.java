@@ -45,6 +45,7 @@ public class TaskList {
      * @return The removed task.
      */
     public Task remove(int index) {
+        assert isValidIndex(index) : "Index out of bounds in remove()";
         return tasks.remove(index);
     }
 
@@ -79,8 +80,6 @@ public class TaskList {
 
     /**
      * Returns all tasks as a formatted numbered list.
-     *
-     * @return A string containing all tasks, or a message if none exist.
      */
     public String getTasksAsString() {
         if (tasks.isEmpty()) {

@@ -31,6 +31,7 @@ public class Ui {
      * @param msg The message to be displayed.
      */
     public String showMessage(String msg) {
+        assert msg != null : "Message cannot be null";
         return INDENT + msg;
     }
 
@@ -41,6 +42,8 @@ public class Ui {
      * @param size The new number of tasks in the list.
      */
     public String showTaskAdded(Task t, int size) {
+        assert t != null : "Task cannot be null when added";
+        assert size >= 0 : "Size should not be negative";
         return "I've added this task:\n   " + t
                 + "\nNow you have " + size + " tasks in the list.";
     }
