@@ -82,5 +82,19 @@ public class Ui {
     public String showError(String msg) {
         return INDENT + msg;
     }
+
+    public String showHelp() {
+        return "Here are the available commands:\n"
+                + "   1. todo <desc> - Add a todo task\n"
+                + "   2. deadline <desc> /by <yyyy-MM-dd> - Add a deadline task\n"
+                + "   3. event <desc> /from <yyyy-MM-dd HHmm> /to <yyyy-MM-dd HHmm> - Add an event task\n"
+                + "   4. list - Show all tasks\n"
+                + "   5. mark <index> - Mark a task as done\n"
+                + "   6. unmark <index> - Unmark a task\n"
+                + "   7. delete <index> - Delete a task\n"
+                + "   8. find <keyword> - Find tasks containing keyword\n"
+                + "   9. help - Show this help message\n"
+                + "  10. bye - Exit Jone";
+    }
 }
 

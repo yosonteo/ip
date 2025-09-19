@@ -10,6 +10,7 @@ public class Jone {
     private static final String COMMAND_UNMARK = "unmark";
     private static final String COMMAND_DELETE = "delete";
     private static final String COMMAND_FIND = "find";
+    private static final String COMMAND_HELP = "help";
     private static final String COMMAND_BYE = "bye";
 
     private static final String ERROR_TODO_EMPTY = "Description of todo cannot be empty";
@@ -68,6 +69,9 @@ public class Jone {
 
                 case COMMAND_FIND:
                     return handleFind(arguments);
+
+                case COMMAND_HELP:
+                    return handleHelp(arguments);
 
                 case COMMAND_BYE:
                     return ui.showExit();
@@ -140,6 +144,10 @@ public class Jone {
             return ui.showError(ERROR_FIND_EMPTY);
         }
         return tasks.findTasks(arguments);
+    }
+
+    private String handleHelp(String arguments) {
+        return ui.showHelp();
     }
 }
 
