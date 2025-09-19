@@ -20,6 +20,9 @@ public class Main extends Application {
         Scene scene = new Scene(fxmlLoader.load());
         stage.setScene(scene);
 
+        stage.setMinHeight(220);
+        stage.setMinWidth(417);
+
         MainWindow controller = fxmlLoader.getController();
         controller.setJone(new Jone("data/jone.txt")); // use your existing storage
 
