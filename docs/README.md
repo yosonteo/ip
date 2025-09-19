@@ -17,7 +17,7 @@ It is lightweight, easy to use, and ensures that you stay on top of your tasks w
 
 4. Open a terminal, cd into the folder, and run:
 ```
-java -jar jone.jar
+java -jar Jone.jar
 ```
 5. A GUI similar to above should appear in a few seconds
 6. Type a command in the input box and press Enter to execute it
